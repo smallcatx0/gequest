@@ -1,0 +1,6 @@
+/.idea
+/*.exe
+/go.sum
+vendor/*
+.DS_Store
+.vscode
