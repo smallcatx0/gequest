@@ -2,6 +2,7 @@ package request
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 	"strings"
 	"testing"
@@ -64,7 +65,7 @@ func TestGet(t *testing.T) {
 	}
 
 	resJson, _ := res.ToString()
-	// fmt.Println(resJson)
+	fmt.Println(resJson)
 
 	assert.Equal(200, res.StatusCode)
 	expectUrl := echoServ + "/get" + "?" + param.Encode()
@@ -87,7 +88,7 @@ func TestPostRaw(t *testing.T) {
 		return
 	}
 	resJson, _ := res.ToString()
-	// fmt.Println(resJson)
+	fmt.Println(resJson)
 
 	assert.Equal(200, res.StatusCode)
 	assert.Equal("hello world", gjson.Get(resJson, "data").String())
@@ -97,7 +98,7 @@ func TestPostRaw(t *testing.T) {
 
 func TestPostJosn(t *testing.T) {
 	assert := assert.New(t)
-	param := map[string]string{"key": "subject"}
+	param := map[string]string{"key": "value"}
 	cli := New("self-Service-NAME", "Target-Service-Name", 0).
 		SetUri(echoServ).
 		SetMethod("POST").
@@ -109,7 +110,7 @@ func TestPostJosn(t *testing.T) {
 		return
 	}
 	resJson, _ := res.ToString()
-	// fmt.Println(resJson)
+	fmt.Println(resJson)
 
 	assert.Equal(200, res.StatusCode)
 	assert.Equal("self-service-name", strings.ToLower(gjson.Get(resJson, "headers.service-name").String()))
