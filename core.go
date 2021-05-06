@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // var ALLOW_METHODS = []string{"GET", "POST", "PUT", "DELETE"}
@@ -82,9 +83,11 @@ func (r *Response) ToString() (string, error) {
 	return string(bytes), nil
 }
 
-func New(serviceName, targetServiceName string) *Core {
+func New(serviceName, targetServiceName string, timeOutMs int) *Core {
 	c := &Core{
-		client:  &http.Client{},
+		client: &http.Client{
+			Timeout: time.Millisecond * time.Duration(timeOutMs),
+		},
 		headers: make(map[string]string),
 	}
 	if serviceName != "" {

@@ -14,16 +14,25 @@ var echoServ = "http://postman-echo.com"
 
 func TestHostNt(t *testing.T) {
 	assert := assert.New(t)
-	cli := New("self", "Target").
+	cli := New("self", "Target", 0).
 		SetUri("http://not.host").
 		SetMethod("Get")
 	_, err := cli.Send()
 	assert.Error(err)
 }
 
+func TestTimeOut(t *testing.T) {
+	assert := assert.New(t)
+	cli := New("self", "target", 1)
+	cli.SetUri("http://www.baidu.com").SetMethod("get")
+
+	_, err := cli.Send()
+	assert.Error(err)
+}
+
 func TestAutoUri(t *testing.T) {
 	assert := assert.New(t)
-	cli := New("self", "postman-echo.com").
+	cli := New("self", "postman-echo.com", 0).
 		SetMethod("gEt").
 		SetPath("/get")
 	res, err := cli.Send()
@@ -43,7 +52,7 @@ func TestGet(t *testing.T) {
 	param := url.Values{
 		"name": []string{"ming"}, "age": []string{"18"},
 	}
-	cli := New("self-Service-NAME", "Target-Service-Name")
+	cli := New("self-Service-NAME", "Target-Service-Name", 0)
 	res, err := cli.SetUri(echoServ).
 		SetPath("/get").
 		SetMethod("get").
@@ -66,7 +75,7 @@ func TestGet(t *testing.T) {
 
 func TestPostRaw(t *testing.T) {
 	assert := assert.New(t)
-	cli := New("self-Service-NAME", "Target-Service-Name").
+	cli := New("self-Service-NAME", "Target-Service-Name", 0).
 		SetUri(echoServ).
 		SetMethod("post").
 		SetPath("/post").
@@ -89,7 +98,7 @@ func TestPostRaw(t *testing.T) {
 func TestPostJosn(t *testing.T) {
 	assert := assert.New(t)
 	param := map[string]string{"key": "subject"}
-	cli := New("self-Service-NAME", "Target-Service-Name").
+	cli := New("self-Service-NAME", "Target-Service-Name", 0).
 		SetUri(echoServ).
 		SetMethod("POST").
 		SetPath("/post").
