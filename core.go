@@ -13,7 +13,6 @@ import (
 	"time"
 )
 
-// var ALLOW_METHODS = []string{"GET", "POST", "PUT", "DELETE"}
 var ALLOW_METHODS = map[string]int{"GET": 1, "POST": 1, "PUT": 1, "DELETE": 1}
 
 type Core struct {
@@ -29,20 +28,20 @@ type Core struct {
 	errs              []error
 	client            *http.Client
 	response          *http.Response
+	debug             bool
+	Logger            Logger
 }
 
 func (c *Core) String() string {
 	res := map[string]interface{}{
-		"serviceName":       c.serviceName,
-		"targetServiceName": c.targetServiceName,
-		"uri":               c.uri,
-		"path":              c.path,
-		"method":            c.method,
-		"headers":           c.headers,
-		"json":              c.json,
-		"body":              string(c.body),
-		"query":             c.query,
-		"errs":              c.errs,
+		"uri":     c.uri,
+		"path":    c.path,
+		"method":  c.method,
+		"headers": c.headers,
+		"json":    c.json,
+		"body":    string(c.body),
+		"query":   c.query,
+		"errs":    c.errs,
 	}
 	if c.response != nil {
 		res["response"], _ = c.Response().ToString()
@@ -89,6 +88,7 @@ func New(serviceName, targetServiceName string, timeOutMs int) *Core {
 			Timeout: time.Millisecond * time.Duration(timeOutMs),
 		},
 		headers: make(map[string]string),
+		Logger:  &ConsoleLog{},
 	}
 	if serviceName != "" {
 		c.serviceName = serviceName
@@ -154,6 +154,23 @@ func (c *Core) SetHeaders(headers map[string]string) *Core {
 	return c
 }
 
+func (c *Core) AddHeaders(headers map[string]string) *Core {
+	for k, v := range headers {
+		c.SetHeader(k, v)
+	}
+	return c
+}
+
+func (c *Core) SetLoger(loger Logger) *Core {
+	c.Logger = loger
+	return c
+}
+
+func (c *Core) Debug(debug bool) *Core {
+	c.debug = debug
+	return c
+}
+
 func (c *Core) Send() (r *Response, err error) {
 	if len(c.errs) != 0 {
 		return nil, c.errs[0]
@@ -177,6 +194,9 @@ func (c *Core) Send() (r *Response, err error) {
 	res, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
+	}
+	if c.debug && c.Logger != nil {
+		c.Logger.Print(c.String())
 	}
 	c.response = res
 	return &Response{res}, nil

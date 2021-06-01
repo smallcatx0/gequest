@@ -1,4 +1,4 @@
-package request
+package request_test
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	request "gitee.com/smallcatx0/gequest"
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
 )
@@ -15,7 +16,7 @@ var echoServ = "http://postman-echo.com"
 
 func TestHostNt(t *testing.T) {
 	assert := assert.New(t)
-	cli := New("self", "Target", 0).
+	cli := request.New("self", "Target", 0).
 		SetUri("http://not.host").
 		SetMethod("Get")
 	_, err := cli.Send()
@@ -24,7 +25,7 @@ func TestHostNt(t *testing.T) {
 
 func TestTimeOut(t *testing.T) {
 	assert := assert.New(t)
-	cli := New("self", "target", 1)
+	cli := request.New("self", "target", 1)
 	cli.SetUri("http://www.baidu.com").SetMethod("get")
 
 	_, err := cli.Send()
@@ -33,7 +34,7 @@ func TestTimeOut(t *testing.T) {
 
 func TestAutoUri(t *testing.T) {
 	assert := assert.New(t)
-	cli := New("self", "postman-echo.com", 0).
+	cli := request.New("self", "postman-echo.com", 0).
 		SetMethod("gEt").
 		SetPath("/get")
 	res, err := cli.Send()
@@ -53,11 +54,12 @@ func TestGet(t *testing.T) {
 	param := url.Values{
 		"name": []string{"ming"}, "age": []string{"18"},
 	}
-	cli := New("self-Service-NAME", "Target-Service-Name", 0)
+	cli := request.New("self-Service-NAME", "Target-Service-Name", 0)
 	res, err := cli.SetUri(echoServ).
 		SetPath("/get").
 		SetMethod("get").
 		SetQuery(param).
+		Debug(true).
 		Send()
 	assert.NoError(err)
 	if err != nil {
@@ -76,11 +78,13 @@ func TestGet(t *testing.T) {
 
 func TestPostRaw(t *testing.T) {
 	assert := assert.New(t)
-	cli := New("self-Service-NAME", "Target-Service-Name", 0).
+	cli := request.New("self-Service-NAME", "Target-Service-Name", 0).
+		SetLoger(request.NewFileLogger("./log.log")).
 		SetUri(echoServ).
 		SetMethod("post").
 		SetPath("/post").
 		SetHeaders(map[string]string{"x-test-name": "tttta"}).
+		Debug(true).
 		SetBodyText("hello world")
 	res, err := cli.Send()
 	assert.NoError(err)
@@ -99,10 +103,11 @@ func TestPostRaw(t *testing.T) {
 func TestPostJosn(t *testing.T) {
 	assert := assert.New(t)
 	param := map[string]string{"key": "value"}
-	cli := New("self-Service-NAME", "Target-Service-Name", 0).
+	cli := request.New("self-Service-NAME", "Target-Service-Name", 0).
 		SetUri(echoServ).
 		SetMethod("POST").
 		SetPath("/post").
+		Debug(true).
 		SetJson(param)
 	res, err := cli.Send()
 	assert.NoError(err)
