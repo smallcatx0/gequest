@@ -44,7 +44,10 @@ func (c *Core) String() string {
 		"errs":    c.errs,
 	}
 	if c.response != nil {
-		res["response"], _ = c.Response().ToString()
+		resBody, _ := c.Response().ToString()
+		res["response"] = resBody
+		c.ResponseRaw().Body = ioutil.NopCloser(bytes.NewBuffer([]byte(resBody)))
+		res["response_headers"] = c.Response().Header
 	}
 	jstr, _ := json.Marshal(res)
 	return string(jstr)
