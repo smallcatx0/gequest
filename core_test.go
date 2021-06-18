@@ -3,6 +3,7 @@ package request_test
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/url"
 	"strings"
 	"testing"
@@ -122,4 +123,17 @@ func TestPostJosn(t *testing.T) {
 	assert.Equal("target-service-name", strings.ToLower(gjson.Get(resJson, "headers.target-service-name").String()))
 	paramJson, _ := json.Marshal(param)
 	assert.JSONEq(string(paramJson), gjson.Get(resJson, "json").String())
+}
+
+func TestWatchResp(t *testing.T) {
+	assert := assert.New(t)
+	cli := request.New("self-service-name", "target-service-name", 0).
+		SetUri(echoServ).
+		SetMethod("get").
+		SetPath("/get")
+	res, err := cli.Send()
+	assert.NoError(err)
+	log.Print(cli.String())
+	resJson, _ := res.ToString()
+	assert.NotEmpty(resJson)
 }

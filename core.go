@@ -44,9 +44,8 @@ func (c *Core) String() string {
 		"errs":    c.errs,
 	}
 	if c.response != nil {
-		resBody, _ := c.Response().ToString()
-		res["response"] = resBody
-		c.ResponseRaw().Body = ioutil.NopCloser(bytes.NewBuffer([]byte(resBody)))
+		respRaw, _ := c.Response().watchAll()
+		res["response"] = string(respRaw)
 		res["response_headers"] = c.Response().Header
 	}
 	jstr, _ := json.Marshal(res)
@@ -73,6 +72,32 @@ func (r *Response) ReadAll() ([]byte, error) {
 
 	defer reader.Close()
 	return ioutil.ReadAll(reader)
+}
+
+func (r *Response) watchAll() (body []byte, err error) {
+	// 先读出来 再写回去 再判断是否要解压
+	bodyRaw, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return
+	}
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(bodyRaw))
+
+	switch r.Header.Get("Content-Encoding") {
+	case "gzip":
+		var reader io.ReadCloser
+		reader, err = gzip.NewReader(bytes.NewReader(bodyRaw))
+		if err != nil {
+			return
+		}
+		body, err = ioutil.ReadAll(reader)
+		if err != nil {
+			return
+		}
+	default:
+		body = bodyRaw
+		return
+	}
+	return
 }
 
 // Read response body into string.
