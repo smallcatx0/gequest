@@ -1,4 +1,4 @@
-module gitee.com/smallcatx0/gequest
+module gitlab.xthktech.cn/tankui/gequest
 
 go 1.14
 
