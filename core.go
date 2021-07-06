@@ -246,6 +246,11 @@ func (c *Core) SendRtry(times int) (r *Response, err error) {
 	return
 }
 
+func (c *Core) Clear() {
+	c.query = nil
+	c.json = "null"
+	c.body = nil
+}
 func (c *Core) Response() *Response {
 	return &Response{c.response}
 }
