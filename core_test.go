@@ -8,7 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	request "gitee.com/smallcatx0/gequest"
+	request "gitlab.xthktech.cn/tankui/gequest"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
 )
@@ -136,4 +137,14 @@ func TestWatchResp(t *testing.T) {
 	log.Print(cli.String())
 	resJson, _ := res.ToString()
 	assert.NotEmpty(resJson)
+}
+
+func TestRtry(t *testing.T) {
+	assert := assert.New(t)
+	cli := request.New("self", "target", 1)
+	cli.SetUri("http://www.baidu.com").SetMethod("get")
+	_, err := cli.SendRtry(10)
+	assert.Error(err)
+	_, err = cli.SetUri("http://aa.bbb.com/aaa").SetMethod("post").SendRtry(10)
+	assert.Error(err)
 }

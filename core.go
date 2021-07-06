@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -228,6 +229,21 @@ func (c *Core) Send() (r *Response, err error) {
 	}
 	c.response = res
 	return &Response{res}, nil
+}
+
+func (c *Core) SendRtry(times int) (r *Response, err error) {
+	if times < 2 {
+		return c.Send()
+	}
+	for i := 0; i < times; i++ {
+		r, err = c.Send()
+		if err == nil {
+			return
+		}
+		log.Print("retry time", i)
+		time.Sleep(time.Millisecond * 100)
+	}
+	return
 }
 
 func (c *Core) Response() *Response {
