@@ -1,4 +1,4 @@
-module gequest
+module gitee.com/smallcatx0/gequest
 
 go 1.14
 
