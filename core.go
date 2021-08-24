@@ -117,7 +117,7 @@ func New(serviceName, targetServiceName string, timeOutMs int) *Core {
 			Timeout: time.Millisecond * time.Duration(timeOutMs),
 		},
 		headers: make(map[string]string),
-		Logger:  &ConsoleLog{},
+		Logger:  ConsoleLog,
 	}
 	if serviceName != "" {
 		c.serviceName = serviceName
