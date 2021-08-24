@@ -2,8 +2,6 @@ package request_test
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/url"
 	"strings"
 	"testing"
@@ -45,7 +43,6 @@ func TestAutoUri(t *testing.T) {
 		return
 	}
 	resJson, _ := res.ToString()
-	// fmt.Println(resJson)
 
 	assert.Equal("http://postman-echo.com/get", gjson.Get(resJson, "url").String())
 }
@@ -69,7 +66,6 @@ func TestGet(t *testing.T) {
 	}
 
 	resJson, _ := res.ToString()
-	fmt.Println(resJson)
 
 	assert.Equal(200, res.StatusCode)
 	expectUrl := echoServ + "/get" + "?" + param.Encode()
@@ -94,7 +90,6 @@ func TestPostRaw(t *testing.T) {
 		return
 	}
 	resJson, _ := res.ToString()
-	fmt.Println(resJson)
 
 	assert.Equal(200, res.StatusCode)
 	assert.Equal("hello world", gjson.Get(resJson, "data").String())
@@ -117,7 +112,6 @@ func TestPostJosn(t *testing.T) {
 		return
 	}
 	resJson, _ := res.ToString()
-	fmt.Println(resJson)
 
 	assert.Equal(200, res.StatusCode)
 	assert.Equal("self-service-name", strings.ToLower(gjson.Get(resJson, "headers.service-name").String()))
@@ -134,7 +128,8 @@ func TestWatchResp(t *testing.T) {
 		SetPath("/get")
 	res, err := cli.Send()
 	assert.NoError(err)
-	log.Print(cli.String())
+	_ = cli.String()
+	// log.Print(cli.String())
 	resJson, _ := res.ToString()
 	assert.NotEmpty(resJson)
 }
@@ -147,4 +142,25 @@ func TestRtry(t *testing.T) {
 	assert.Error(err)
 	_, err = cli.SetUri("http://aa.bbb.com/aaa").SetMethod("post").SendRtry(10)
 	assert.Error(err)
+}
+
+func TestClearn(t *testing.T) {
+	ass := assert.New(t)
+	cli := request.New("self", "target", 5000)
+	cli.SetUri(echoServ).
+		SetPath("/get").
+		SetQuery(url.Values{"name": []string{"kuiiii"}})
+	cli.Clear()
+	cli.SetQuery(url.Values{"age": []string{"18"}})
+	errs := cli.Errors()
+	ass.Equal(0, len(errs))
+	res, err := cli.Send()
+	ass.NoError(err)
+	if err != nil {
+		return
+	}
+	resJson, _ := res.ToString()
+	// log.Print(resJson)
+	ass.NotEqual("kuiiii", gjson.Get(resJson, "args.name").String())
+	ass.Equal("18", gjson.Get(resJson, "args.age").String())
 }
