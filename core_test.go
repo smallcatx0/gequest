@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	request "gitlab.xthktech.cn/tankui/gequest"
+	request "gitee.com/smallcatx0/gequest"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"

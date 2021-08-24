@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	request "gitlab.xthktech.cn/tankui/gequest"
+	request "gitee.com/smallcatx0/gequest"
 )
 
 func main() {
