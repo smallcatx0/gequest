@@ -221,13 +221,13 @@ func (c *Core) Send() (r *Response, err error) {
 		req.Header.Add(k, v)
 	}
 	res, err := c.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
+	c.response = res
 	if c.debug && c.Logger != nil {
 		c.Logger.Print(c.String())
 	}
-	c.response = res
+	if err != nil {
+		return nil, err
+	}
 	return &Response{res}, nil
 }
 
