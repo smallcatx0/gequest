@@ -1,22 +1,5 @@
 # xthk-request
 
-## 安装使用
-```go
-go get -u gitlab.xthktech.cn/tankui/gequest
-
-import (
-   request gitlab.xthktech.cn/tankui/gequest
-)
-
-# gitee
-go get -u gitee.com/smallcatx0/gequest
-
-import (
-   request gitlab.xthktech.cn/tankui/gequest
-)
-
-```
-
 ## 用法
 
 快速开始
@@ -28,7 +11,7 @@ import (
 	"fmt"
 	"net/url"
 
-	request "gitee.com/smallcatx0/gequest"
+	request "github.com/smallcatx0/gequest"
 )
 
 func main() {

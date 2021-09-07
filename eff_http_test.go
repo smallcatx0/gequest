@@ -3,9 +3,9 @@ package request_test
 import (
 	"testing"
 
+	request "github.com/smallcatx0/gequest"
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
-	request "gitlab.xthktech.cn/tankui/gequest"
 )
 
 func TestMultReq(t *testing.T) {

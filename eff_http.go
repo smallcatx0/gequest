@@ -1,7 +1,6 @@
 package request
 
 import (
-	"log"
 	"sync"
 )
 
@@ -32,7 +31,6 @@ func MultRequest(requests ...*Core) []Resp {
 	// 将返回转化为数组
 	resps := make([]Resp, len(requests))
 	for one := range ch {
-		log.Println(one.Index)
 		resps[one.Index] = one
 	}
 	return resps
