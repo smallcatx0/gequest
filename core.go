@@ -158,8 +158,8 @@ func (c *Core) SetJson(param interface{}) *Core {
 }
 
 func (c *Core) SetBodyText(body string) *Core {
-	c.body = []byte(body)
 	c.SetHeader("Content-Type", "text/plain")
+	c.SetBody([]byte(body))
 	return c
 }
 

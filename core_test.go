@@ -92,6 +92,8 @@ func TestPostRaw(t *testing.T) {
 	resJson, _ := res.ToString()
 
 	assert.Equal(200, res.StatusCode)
+	assert.Equal(200, cli.Response().StatusCode)
+	assert.Equal(200, cli.ResponseRaw().StatusCode)
 	assert.Equal("hello world", gjson.Get(resJson, "data").String())
 	assert.NotEqual("self-service-name", strings.ToLower(gjson.Get(resJson, "headers.service-name").String()))
 	assert.NotEqual("target-service-name", strings.ToLower(gjson.Get(resJson, "headers.target-service-name").String()))
@@ -163,4 +165,56 @@ func TestClearn(t *testing.T) {
 	// log.Print(resJson)
 	ass.NotEqual("kuiiii", gjson.Get(resJson, "args.name").String())
 	ass.Equal("18", gjson.Get(resJson, "args.age").String())
+}
+
+func TestSetHeaders(t *testing.T) {
+	ass := assert.New(t)
+	cli := request.New("self", "target", 0)
+	cli.SetUri(echoServ).SetMethod("get").SetPath("/get")
+	cli.SetHeader("x-gender", "boy")
+	cli.SetHeaders(map[string]string{
+		"x-name": "lili",
+		"x-age":  "18",
+	})
+	r, err := cli.Send()
+	ass.NoError(err)
+	if err != nil {
+		return
+	}
+	bodyStr, err := r.ToString()
+	ass.NoError(err)
+	if err != nil {
+		return
+	}
+	bodyParse := gjson.Parse(bodyStr)
+	ass.NotEqual("boy", bodyParse.Get("headers.x-gender").String())
+	ass.Equal("lili", bodyParse.Get("headers.x-name").String())
+	ass.Equal("18", bodyParse.Get("headers.x-age").String())
+
+}
+
+func TestAddHeaders(t *testing.T) {
+	ass := assert.New(t)
+	cli := request.New("self", "target", 0)
+	cli.SetUri(echoServ).SetMethod("get").SetPath("/get")
+	cli.SetHeader("x-gender", "boy")
+	cli.AddHeaders(map[string]string{
+		"x-name": "lili",
+		"x-age":  "18",
+	})
+	r, err := cli.Send()
+	ass.NoError(err)
+	if err != nil {
+		return
+	}
+	bodyStr, err := r.ToString()
+	ass.NoError(err)
+	if err != nil {
+		return
+	}
+	bodyParse := gjson.Parse(bodyStr)
+	ass.Equal("boy", bodyParse.Get("headers.x-gender").String())
+	ass.Equal("lili", bodyParse.Get("headers.x-name").String())
+	ass.Equal("18", bodyParse.Get("headers.x-age").String())
+
 }

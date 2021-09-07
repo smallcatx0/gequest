@@ -255,8 +255,11 @@ func MultRequest(requests ...*Core) []Resp
 ## 单元测试
 
 ```bash
+go test -timeout 30s -coverprofile=/tmp/gequest-cover github.com/smallcatx0/gequest -v
+
+...
 PASS
-coverage: 81.8% of statements
-ok  	github.com/smallcatx0/gequest	6.027s	coverage: 81.8% of statements
+coverage: 86.1% of statements
+ok      github.com/smallcatx0/gequest   6.951s  coverage: 86.1% of statements
 ```
 

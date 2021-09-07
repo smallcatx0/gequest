@@ -10,7 +10,7 @@ import (
 
 func TestMultReq(t *testing.T) {
 	requests := make([]*request.Core, 0, 5)
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 20; i++ {
 		requests = append(requests,
 			request.New("", "postman-echo.com", 0).
 				SetMethod("post").
