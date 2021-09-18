@@ -73,7 +73,7 @@ func orderMulti() {
 		)
 	}
 	// 并发发起请求
-	res := request.MultRequest(requests...)
+	res := request.MultRequest(3, requests...)
 	// res 的结果按请求顺序排布
 	for i, one := range res {
 		if one.Err != nil {

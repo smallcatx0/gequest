@@ -97,7 +97,7 @@ func orderMulti() {
 		)
 	}
 	// 并发发起请求
-	res := request.MultRequest(requests...)
+	res := request.MultRequest(3, requests...)
 	// res 的结果按请求顺序排布
 	for i, one := range res {
 		if one.Err != nil {
@@ -245,7 +245,7 @@ type Resp struct {
 	Core  *Core
 	Err   error
 }
-func MultRequest(requests ...*Core) []Resp
+func MultRequest(retime int, requests ...*Core) []Resp
 ```
 
 传入多个准备好的请求实例，返回的结果会以请求顺序排布。

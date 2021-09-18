@@ -18,7 +18,7 @@ func TestMultReq(t *testing.T) {
 				SetJson(map[string]int{"index": i}),
 		)
 	}
-	res := request.MultRequest(requests...)
+	res := request.MultRequest(3, requests...)
 	for i, one := range res {
 		assert.NoError(t, one.Err)
 		if one.Err != nil {

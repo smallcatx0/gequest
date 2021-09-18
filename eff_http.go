@@ -11,14 +11,14 @@ type Resp struct {
 }
 
 // 并发请求
-func MultRequest(requests ...*Core) []Resp {
+func MultRequest(retime int, requests ...*Core) []Resp {
 	var wg sync.WaitGroup
 	wg.Add(len(requests))
 	ch := make(chan Resp, len(requests))
 	for i, req := range requests {
 		go func(i int, req *Core, ch chan Resp) {
 			defer wg.Done()
-			_, err := req.Send()
+			_, err := req.SendRtry(retime)
 			ch <- Resp{
 				Index: i,
 				Core:  req,
